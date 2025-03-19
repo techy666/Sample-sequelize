@@ -1,16 +1,25 @@
+import express from "express";
 import dotenv from "dotenv";
 import sequelize from "./lib/db.js";
-import app from "./app.js";
+
+import userRouter from "./routes/user.route.js";
 
 dotenv.config();
 
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/v1/users", userRouter);
+
 sequelize
-  .authenticate()
+  .sync()
   .then(() => {
     console.log("SQL Server established successfully");
 
     app.on("error", (err) => {
-      console.log("ERROR Occured: ");
+      console.log("Error while listening to port- ");
       throw err;
     });
 
